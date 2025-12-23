@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2299.77">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;My Piggy Bank Tracker (Google Sheets)&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Load Tailwind CSS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@import url('https://fonts.googleapis.com/css2?family=Bangers&amp;family=Inter:wght@400;600;800&amp;display=swap');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Inter', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f7f3e8; /* Light background */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.bangers {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Bangers', cursive;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.transaction-card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.transaction-card:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-2px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15), 0 6px 10px -4px rgba(0, 0, 0, 0.08);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.money-in {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-left: 8px solid #34d399; /* Green */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.money-out {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-left: 8px solid #f87171; /* Red */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Custom scrollbar for transaction list */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#transactions-list::-webkit-scrollbar {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#transactions-list::-webkit-scrollbar-thumb {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #fca5a5;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#transactions-list::-webkit-scrollbar-track {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #fef3c7;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="min-h-screen p-4 md:p-8"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-3xl transaction-card"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Header --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;header class="text-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 class="text-5xl md:text-6xl font-extrabold text-yellow-600 bangers tracking-wider"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>My Piggy Bank 🐷</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p id="auth-status" class="text-xs text-gray-500 mt-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>Data saved to Google Sheet. Please configure API endpoint.</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Balance Card --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-yellow-100 p-6 rounded-2xl mb-8 shadow-inner border-4 border-yellow-300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="text-xl font-bold text-gray-700"&gt;Current Balance:&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p id="current-balance" class="text-6xl font-black text-yellow-700 mt-2 transition-transform duration-300 transform hover:scale-105"&gt;$0.00&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Add Transaction Form --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section class="mb-10 p-6 bg-red-50 rounded-2xl border border-red-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="text-2xl font-bold text-red-600 mb-4"&gt;Add a Transaction&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;form id="transaction-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Type Selector --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="col-span-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label for="type" class="block text-sm font-medium text-gray-700"&gt;Type&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;select id="type" name="type" required class="mt-1 w-full p-3 border border-red-300 rounded-lg focus:ring-red-500 focus:border-red-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="in"&gt;💰 Money In (Deposit)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="out"&gt;🛍️ Money Out (Spend)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Amount Input --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="col-span-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label for="amount" class="block text-sm font-medium text-gray-700"&gt;Amount ($)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="number" id="amount" name="amount" step="0.01" min="0.01" required placeholder="5.00"</p>
+<p class="p1"><span class="Apple-converted-space">                           </span>class="mt-1 w-full p-3 border border-red-300 rounded-lg focus:ring-red-500 focus:border-red-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Description Input --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="col-span-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label for="description" class="block text-sm font-medium text-gray-700"&gt;What was it for?&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="text" id="description" name="description" required placeholder="Allowance or new toy"</p>
+<p class="p1"><span class="Apple-converted-space">                           </span>class="mt-1 w-full p-3 border border-red-300 rounded-lg focus:ring-red-500 focus:border-red-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Submit Button --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="col-span-full mt-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" id="submit-btn"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>class="w-full py-3 px-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition duration-150 ease-in-out shadow-lg"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Add Transaction</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p id="error-message" class="text-red-500 mt-3 text-center hidden"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Transaction History --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="text-2xl font-bold text-gray-700 mb-4"&gt;Transaction History&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="transactions-list" class="space-y-3 max-h-96 overflow-y-auto pr-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p id="loading-msg" class="text-center text-gray-500"&gt;Loading transactions...&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Transactions will be inserted here by JavaScript --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// =================================================================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ⚠️ CRITICAL: PASTE YOUR DEPLOYED GOOGLE APPS SCRIPT URL HERE</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Follow Step 2 instructions below to get this URL.</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// =================================================================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const SHEET_API_ENDPOINT = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>let transactions = []; // The in-memory array of transactions</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// UI Elements</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const balanceEl = document.getElementById('current-balance');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const transactionsListEl = document.getElementById('transactions-list');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const formEl = document.getElementById('transaction-form');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const submitBtn = document.getElementById('submit-btn');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const errorMsgEl = document.getElementById('error-message');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const loadingMsgEl = document.getElementById('loading-msg');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const authStatusEl = document.getElementById('auth-status');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/**</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* Converts a number to a dollar string format.</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* @param {number} amount</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* @returns {string}</p>
+<p class="p1"><span class="Apple-converted-space">         </span>*/</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const formatCurrency = (amount) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return new Intl.NumberFormat('en-US', {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>style: 'currency',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>currency: 'USD',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}).format(amount);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/**</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* Renders the list of transactions and calculates the balance.</p>
+<p class="p1"><span class="Apple-converted-space">         </span>*/</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const renderTransactions = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let totalBalance = 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let html = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (transactions.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>loadingMsgEl.textContent = 'No transactions yet! Add your first money-in (deposit).';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>loadingMsgEl.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>loadingMsgEl.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Sort by timestamp (newest first). Timestamp comes as a Date string from the Sheet.</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const sortedTransactions = transactions.sort((a, b) =&gt; new Date(b.Timestamp) - new Date(a.Timestamp));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Render list</p>
+<p class="p1"><span class="Apple-converted-space">            </span>sortedTransactions.forEach(t =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// IMPORTANT: We use the column headers from the Google Sheet (Timestamp, Type, Amount, Description)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const amount = parseFloat(t.Amount);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (isNaN(amount)) return; // Skip invalid entries</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>const isMoneyIn = t.Type === 'in';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const sign = isMoneyIn ? '+' : '-';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const colorClass = isMoneyIn ? 'text-green-600' : 'text-red-600';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const cardClass = isMoneyIn ? 'money-in bg-green-50' : 'money-out bg-red-50';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const icon = isMoneyIn ? '💰' : '🛍️';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Update total balance<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>totalBalance += isMoneyIn ? amount : -amount;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Create HTML for transaction item</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const dateText = new Date(t.Timestamp).toLocaleDateString();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>html += `</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="p-4 rounded-xl transaction-card ${cardClass} flex items-center justify-between"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="flex items-center space-x-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="text-3xl"&gt;${icon}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;p class="text-base font-semibold text-gray-800"&gt;${t.Description}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;p class="text-xs text-gray-500"&gt;${dateText}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="text-right"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-xl font-bold ${colorClass}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>${sign}${formatCurrency(amount).replace('$', '')}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>transactionsListEl.innerHTML = html;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>balanceEl.textContent = formatCurrency(totalBalance);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/**</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* Fetches transactions from the Google Sheet API.</p>
+<p class="p1"><span class="Apple-converted-space">         </span>*/</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const loadTransactions = async () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (SHEET_API_ENDPOINT.includes("YOUR_APPS_SCRIPT")) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>authStatusEl.textContent = 'ERROR: API URL not configured. See Step 2 instructions.';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>loadingMsgEl.textContent = 'Loading transactions from Google Sheet...';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>errorMsgEl.classList.add('hidden');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const response = await fetch(SHEET_API_ENDPOINT + '?action=read');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (!response.ok) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>throw new Error(`HTTP error! status: ${response.status}`);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const data = await response.json();</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// The Apps Script returns an array of objects</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (data.status === 'success' &amp;&amp; Array.isArray(data.transactions)) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>transactions = data.transactions;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>renderTransactions();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>throw new Error('Invalid data format received from Sheet API.');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>} catch (error) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>console.error("Error loading transactions:", error);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>loadingMsgEl.textContent = 'Failed to load data. Check your API URL and Apps Script deployment.';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.textContent = 'Load Error: See console for details.';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/**</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* Handles form submission to save a new transaction to the Google Sheet API.</p>
+<p class="p1"><span class="Apple-converted-space">         </span>* @param {Event} e - The form submit event.</p>
+<p class="p1"><span class="Apple-converted-space">         </span>*/</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const saveTransaction = async (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>e.preventDefault();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (SHEET_API_ENDPOINT.includes("YOUR_APPS_SCRIPT")) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.textContent = 'API URL not configured. Please paste your URL.';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const type = document.getElementById('type').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const amount = parseFloat(document.getElementById('amount').value);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const description = document.getElementById('description').value.trim();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (isNaN(amount) || amount &lt;= 0 || description === '') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.textContent = 'Please enter a valid amount and description.';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>errorMsgEl.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>submitBtn.textContent = 'Saving...';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>submitBtn.disabled = true;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const newTransaction = {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>action: 'write',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>Type: type,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>Amount: amount,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>Description: description</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Timestamp is generated by the Apps Script</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const response = await fetch(SHEET_API_ENDPOINT, {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>mode: 'cors',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cache: 'no-cache',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>headers: {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>'Content-Type': 'application/json'</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>body: JSON.stringify(newTransaction)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (!response.ok) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>throw new Error(`HTTP error! status: ${response.status}`);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>const result = await response.json();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (result.status === 'success') {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Refresh data after successful write</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>await loadTransactions();<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Clear form inputs</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.getElementById('amount').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.getElementById('description').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>throw new Error(result.message || 'Unknown write error.');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>} catch (error) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>console.error("Error saving transaction:", error);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.textContent = 'Save Error: Failed to write to Google Sheet. Check console.';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>errorMsgEl.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} finally {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>submitBtn.textContent = 'Add Transaction';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>submitBtn.disabled = false;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Initialize the app on page load</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.onload = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 1. Load data from the sheet</p>
+<p class="p1"><span class="Apple-converted-space">            </span>loadTransactions();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 2. Attach the form submit listener</p>
+<p class="p1"><span class="Apple-converted-space">            </span>formEl.addEventListener('submit', saveTransaction);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
